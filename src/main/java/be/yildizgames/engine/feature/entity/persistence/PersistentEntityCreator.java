@@ -24,8 +24,8 @@
 
 package be.yildizgames.engine.feature.entity.persistence;
 
+import be.yildiz.common.id.EntityId;
 import be.yildiz.module.database.DataBaseConnectionProvider;
-import be.yildizgames.engine.feature.entity.BaseEntity;
 import be.yildizgames.engine.feature.entity.EntityCreator;
 import be.yildizgames.engine.feature.entity.EntityToCreate;
 import org.slf4j.Logger;
@@ -37,9 +37,9 @@ import java.sql.SQLException;
 /**
  * @author Grégory Van den Borre
  */
-public class PersistentEntityCreator implements EntityCreator<BaseEntity> {
+public class PersistentEntityCreator implements EntityCreator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersistentEntityCreator.class);
+    private final Logger logger = LoggerFactory.getLogger(PersistentEntityCreator.class);
 
     private final PersistentEntity persistentEntity;
 
@@ -51,13 +51,12 @@ public class PersistentEntityCreator implements EntityCreator<BaseEntity> {
     }
 
     @Override
-    public BaseEntity create(EntityToCreate e) {
+    public EntityId create(EntityToCreate e) {
         try(Connection c = provider.getConnection()) {
             return this.persistentEntity.save(e, c);
         } catch (SQLException ex) {
-            LOGGER.error("Sql error:", ex);
-            //FIXME should'nt return null.
-            return null;
+            this.logger.error("Sql error:", ex);
+            return EntityId.valueOf(-1);
         }
     }
 }
