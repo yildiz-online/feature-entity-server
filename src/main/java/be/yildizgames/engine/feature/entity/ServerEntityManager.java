@@ -32,7 +32,7 @@ public class ServerEntityManager extends EntityManager<BaseEntity> {
     private static final ServerEntityManager INSTANCE = new ServerEntityManager();
 
     private ServerEntityManager() {
-        super(BaseEntity.WORLD);
+        super(null);
     }
 
     public static ServerEntityManager getInstance() {

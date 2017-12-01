@@ -24,29 +24,25 @@
 
 package be.yildizgames.engine.feature.entity.persistence;
 
+import be.yildiz.common.collections.Lists;
 import be.yildiz.common.collections.Maps;
 import be.yildiz.common.collections.Sets;
-import be.yildiz.common.id.ActionId;
 import be.yildiz.common.id.EntityId;
 import be.yildiz.common.id.PlayerId;
 import be.yildiz.common.id.WorldId;
 import be.yildiz.common.vector.Point3D;
 import be.yildiz.module.database.data.PersistentData;
-import be.yildiz.server.generated.database.tables.Entities;
-import be.yildiz.server.generated.database.tables.records.EntitiesRecord;
-import be.yildiz.shared.construction.entity.EntityFactory;
 import be.yildizgames.engine.feature.entity.*;
 import be.yildizgames.engine.feature.entity.data.EntityType;
-import be.yildizgames.engine.feature.entity.module.ModuleGroup;
+import be.yildizgames.engine.feature.entity.generated.database.tables.Entities;
+import be.yildizgames.engine.feature.entity.generated.database.tables.records.EntitiesRecord;
 import org.jooq.DSLContext;
 import org.jooq.RecordMapper;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
-import org.jooq.types.UShort;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -56,7 +52,7 @@ import java.util.Set;
  *
  * @author Grégory Van den Borre
  */
-public final class PersistentEntity implements PersistentData<EntityToCreate, BaseEntity>, RecordMapper<EntitiesRecord, BaseEntity> {
+public final class PersistentEntity implements PersistentData<EntityToCreate, Entity, EntityId>, RecordMapper<EntitiesRecord, BaseEntity> {
 
     /**
      * Persistent unit where data must be retrieved.
@@ -68,20 +64,15 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, Ba
      */
     private final Set<EntityId> freeId = Sets.newInsertionOrderedSet();
     private final EntityInConstructionFactory constructionFactory = new EntityInConstructionFactorySimple();
-    private final EntityFactory<BaseEntity> entityFactory;
+    private final List<EntityInConstruction> entityToBuild = Lists.newList();
 
     /**
      * Full constructor, retrieve data from persistent context, create them in the factory and register them in the entity manager.
      *
      * @param c SQL connection.
-     * @param factory Factory to build entities.
-     * @param entityManager To register the loaded entities.
      */
-    public PersistentEntity(Connection c,
-                            final EntityFactory<BaseEntity> factory,
-                            EntityManager<BaseEntity> entityManager) {
+    public PersistentEntity(Connection c) {
         super();
-        this.entityFactory = factory;
         Map<EntityId, String> names = Maps.newMap();
         try (DSLContext create = this.getDSL(c)) {
 
@@ -92,30 +83,19 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, Ba
                                 if (r.getActive()) {
                                     PlayerId player = PlayerId.valueOf(r.getPlyId().intValue());
                                     EntityType type = EntityType.valueOf(r.getType().intValue());
-                                    ModuleGroup m = new ModuleGroup.ModuleGroupBuilder()
-                                            .withHull(ActionId.valueOf(r.getModuleHull().intValue()))
-                                            .withEnergy(ActionId.valueOf(r.getModuleEnergy().intValue()))
-                                            .withDetector(ActionId.valueOf(r.getModuleDetector().intValue()))
-                                            .withMove(ActionId.valueOf(r.getModuleMove().intValue()))
-                                            .withInteraction(ActionId.valueOf(r.getModuleInteraction().intValue()))
-                                            .withAdditional1(ActionId.valueOf(r.getModuleAdditional_1().intValue()))
-                                            .withAdditional2(ActionId.valueOf(r.getModuleAdditional_2().intValue()))
-                                            .withAdditional3(ActionId.valueOf(r.getModuleAdditional_3().intValue()))
-                                            .build();
                                     Point3D pos = Point3D.valueOf(r.getPositionX().floatValue(), r.getPositionY().floatValue(), r.getPositionZ().floatValue());
                                     Point3D dir = Point3D.valueOf(r.getDirectionX().floatValue(), r.getDirectionY().floatValue(), r.getDirectionZ().floatValue());
                                     EntityInConstruction eic = constructionFactory.build(
                                             type,
                                             id,
                                             names.getOrDefault(id, type.name),
-                                            m,
                                             player,
                                             pos,
                                             dir,
                                             r.getHitPoint().intValue(),
                                             r.getEnergyPoint().intValue());
 
-                                    factory.createEntity(eic);
+                                    entityToBuild.add(eic);
                                 } else {
                                     this.freeId.add(id);
                                 }
@@ -124,34 +104,25 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, Ba
     }
 
     @Override
-    public BaseEntity save(final EntityToCreate data, Connection c) {
+    public EntityId save(final EntityToCreate data, Connection c) {
         EntityId id = this.getFreeId(c);
         try(DSLContext context = this.getDSL(c)) {
             context.update(table)
-                    .set(table.TYPE, UByte.valueOf(data.getType().type))
-                    .set(table.PLY_ID, UShort.valueOf(data.getOwner().value))
-                    .set(table.MODULE_MOVE, UByte.valueOf(data.getModules().getMove().value))
-                    .set(table.MODULE_INTERACTION, UByte.valueOf(data.getModules().getInteraction().value))
-                    .set(table.MODULE_HULL, UByte.valueOf(data.getModules().getHull().value))
-                    .set(table.MODULE_ENERGY, UByte.valueOf(data.getModules().getEnergy().value))
-                    .set(table.MODULE_DETECTOR, UByte.valueOf(data.getModules().getDetector().value))
-                    .set(table.MODULE_ADDITIONAL_1, UByte.valueOf(data.getModules().getAdditional1().value))
-                    .set(table.MODULE_ADDITIONAL_2, UByte.valueOf(data.getModules().getAdditional2().value))
-                    .set(table.MODULE_ADDITIONAL_3, UByte.valueOf(data.getModules().getAdditional3().value))
-                    .set(table.MAP_ID, UByte.valueOf(1))
+                    .set(table.TYPE, (byte)data.getType().type)
+                    .set(table.PLY_ID, (short)data.getOwner().value)
+                    .set(table.MAP_ID, (byte)1)
                     .set(table.ACTIVE, true)
-                    .set(table.HIT_POINT, UShort.valueOf(0)) //FIXME find value
-                    .set(table.ENERGY_POINT, UShort.valueOf(0))
+                    .set(table.HIT_POINT, (short)(0)) //FIXME find value
+                    .set(table.ENERGY_POINT, (short)(0))
                     .set(table.POSITION_X, Double.valueOf(data.getPosition().x))
                     .set(table.POSITION_Y, Double.valueOf(data.getPosition().y))
                     .set(table.POSITION_Z, Double.valueOf(data.getPosition().z))
                     .set(table.DIRECTION_X, Double.valueOf(data.getDirection().x))
                     .set(table.DIRECTION_Y, Double.valueOf(data.getDirection().y))
                     .set(table.DIRECTION_Z, Double.valueOf(data.getDirection().z))
-                    .where(table.ENT_ID.equal(UInteger.valueOf(id.value)))
+                    .where(table.ENT_ID.equal((int)(id.value)))
                     .execute();
-            DefaultEntityInConstruction eic = constructionFactory.build(id, data);
-            return entityFactory.createEntity(eic);
+            return id;
         }
     }
 
@@ -189,45 +160,35 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, Ba
     public void delete(final EntityId id, Connection c) {
         this.freeId.add(id);
         try (DSLContext create = this.getDSL(c)) {
-            EntitiesRecord entity = create.fetchOne(table, table.ENT_ID.equal(UInteger.valueOf(id.value)));
+            EntitiesRecord entity = create.fetchOne(table, table.ENT_ID.equal((int)(id.value)));
             entity.setActive(false);
             create.executeUpdate(entity);
         }
     }
 
     @Override
-    public void update(final BaseEntity data, Connection c) {
+    public void update(final Entity data, Connection c) {
         try (DSLContext create = this.getDSL(c)) {
-            EntitiesRecord entity = create.fetchOne(table, table.ENT_ID.equal(UInteger.valueOf(data.getId().value)));
-            entity.setEntId(UInteger.valueOf(data.getId().value));
-            entity.setMapId(UByte.valueOf(1));
-            entity.setType(UByte.valueOf(data.getType().type));
-            entity.setPlyId(UShort.valueOf(data.getOwner().value));
+            EntitiesRecord entity = create.fetchOne(table, table.ENT_ID.equal((int)data.getId().value));
+            entity.setEntId((int)data.getId().value);
+            entity.setMapId((byte)1);
+            entity.setType((byte)data.getType().type);
+            entity.setPlyId((short)data.getOwner().value);
             entity.setPositionX((double)data.getPosition().x);
             entity.setPositionY((double) data.getPosition().y);
             entity.setPositionZ((double) data.getPosition().z);
             entity.setDirectionX((double) data.getDirection().x);
             entity.setDirectionY((double) data.getDirection().y);
             entity.setDirectionZ((double) data.getDirection().z);
-            ModuleGroup modules = data.getModules();
-            entity.setModuleHull(UByte.valueOf(modules.getHull().value));
-            entity.setModuleEnergy(UByte.valueOf(modules.getEnergy().value));
-            entity.setModuleInteraction(UByte.valueOf(modules.getInteraction().value));
-            entity.setModuleMove(UByte.valueOf(modules.getMove().value));
-            entity.setModuleDetector(UByte.valueOf(modules.getDetector().value));
-            entity.setModuleAdditional_1(UByte.valueOf(modules.getAdditional1().value));
-            entity.setModuleAdditional_2(UByte.valueOf(modules.getAdditional2().value));
-            entity.setModuleAdditional_3(UByte.valueOf(modules.getAdditional3().value));
-            entity.setMapId(UByte.valueOf(WorldId.WORLD.value));
-            entity.setHitPoint(UShort.valueOf(data.getHitPoints()));
-            entity.setEnergyPoint(UShort.valueOf(data.getEnergyPoints()));
-
+            entity.setMapId((byte)WorldId.WORLD.value);
+            entity.setHitPoint((short)data.getHitPoints());
+            entity.setEnergyPoint((short)data.getEnergyPoints());
             entity.setActive(true);
 
             // FIXME use right types.
             // Deducted from the modules.
-            // entity.setMaxhp(UShort.valueOf(data.getMaxHitPoints()));
-            // entity.setMaxenergy(UShort.valueOf(data.getMaxEnergyPoints()));
+            // entity.setMaxHp(UShort.valueOf(data.getMaxHitPoints()));
+            // entity.setMaxEnergy(UShort.valueOf(data.getMaxEnergyPoints()));
             create.executeUpdate(entity);
         }
     }
