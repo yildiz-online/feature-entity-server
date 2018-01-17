@@ -24,8 +24,8 @@
 
 package be.yildizgames.engine.feature.entity.persistence;
 
-import be.yildiz.common.id.EntityId;
 import be.yildiz.module.database.DataBaseConnectionProvider;
+import be.yildizgames.common.model.EntityId;
 import be.yildizgames.engine.feature.entity.EntityCreator;
 import be.yildizgames.engine.feature.entity.EntityToCreate;
 import org.slf4j.Logger;

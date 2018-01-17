@@ -24,14 +24,14 @@
 
 package be.yildizgames.engine.feature.entity.persistence;
 
-import be.yildiz.common.collections.Lists;
-import be.yildiz.common.collections.Maps;
-import be.yildiz.common.collections.Sets;
-import be.yildiz.common.id.EntityId;
-import be.yildiz.common.id.PlayerId;
-import be.yildiz.common.id.WorldId;
-import be.yildiz.common.vector.Point3D;
 import be.yildiz.module.database.data.PersistentData;
+import be.yildizgames.common.collection.Lists;
+import be.yildizgames.common.collection.Maps;
+import be.yildizgames.common.collection.Sets;
+import be.yildizgames.common.geometry.Point3D;
+import be.yildizgames.common.model.EntityId;
+import be.yildizgames.common.model.PlayerId;
+import be.yildizgames.common.model.WorldId;
 import be.yildizgames.engine.feature.entity.*;
 import be.yildizgames.engine.feature.entity.data.EntityType;
 import be.yildizgames.engine.feature.entity.generated.database.tables.Entities;
@@ -180,7 +180,7 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, En
             entity.setDirectionX((double) data.getDirection().x);
             entity.setDirectionY((double) data.getDirection().y);
             entity.setDirectionZ((double) data.getDirection().z);
-            entity.setMapId((byte)WorldId.WORLD.value);
+            entity.setMapId((byte) WorldId.WORLD.value);
             entity.setHitPoint((short)data.getHitPoints());
             entity.setEnergyPoint((short)data.getEnergyPoints());
             entity.setActive(true);
