@@ -1,7 +1,7 @@
 /*
  * This file is part of the Yildiz-Engine project, licenced under the MIT License  (MIT)
  *
- *  Copyright (c) 2017 Grégory Van den Borre
+ *  Copyright (c) 2018 Grégory Van den Borre
  *
  *  More infos available: https://www.yildiz-games.be
  *
@@ -32,7 +32,12 @@ import be.yildizgames.common.geometry.Point3D;
 import be.yildizgames.common.model.EntityId;
 import be.yildizgames.common.model.PlayerId;
 import be.yildizgames.common.model.WorldId;
-import be.yildizgames.engine.feature.entity.*;
+import be.yildizgames.engine.feature.entity.BaseEntity;
+import be.yildizgames.engine.feature.entity.Entity;
+import be.yildizgames.engine.feature.entity.EntityInConstruction;
+import be.yildizgames.engine.feature.entity.EntityInConstructionFactory;
+import be.yildizgames.engine.feature.entity.EntityInConstructionFactorySimple;
+import be.yildizgames.engine.feature.entity.EntityToCreate;
 import be.yildizgames.engine.feature.entity.data.EntityType;
 import be.yildizgames.engine.feature.entity.generated.database.tables.Entities;
 import be.yildizgames.engine.feature.entity.generated.database.tables.records.EntitiesRecord;
