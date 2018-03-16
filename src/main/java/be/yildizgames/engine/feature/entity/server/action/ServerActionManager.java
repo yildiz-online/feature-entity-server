@@ -22,24 +22,19 @@
  *
  */
 
-package be.yildizgames.engine.feature.entity.action;
+package be.yildizgames.engine.feature.entity.server.action;
 
 import be.yildizgames.engine.feature.entity.ActionManager;
 import be.yildizgames.engine.feature.entity.BaseEntity;
-import be.yildizgames.engine.feature.entity.ServerEntityManager;
+import be.yildizgames.engine.feature.entity.server.ServerEntityManager;
 
 /**
  * @author Grégory Van den Borre
  */
 public class ServerActionManager extends ActionManager<BaseEntity> {
 
-    private static final ServerActionManager INSTANCE = new ServerActionManager();
-
-    private ServerActionManager() {
-        super(ServerEntityManager.getInstance());
+    private ServerActionManager(ServerEntityManager entityManager) {
+        super(entityManager);
     }
 
-    public static ServerActionManager getInstance() {
-        return INSTANCE;
-    }
 }

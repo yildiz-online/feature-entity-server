@@ -22,41 +22,19 @@
  *
  */
 
-package be.yildizgames.engine.feature.entity.persistence;
+module be.yildizgames.feature.entity.server {
 
-import be.yildizgames.common.model.EntityId;
-import be.yildizgames.engine.feature.entity.EntityCreator;
-import be.yildizgames.engine.feature.entity.EntityToCreate;
-import be.yildizgames.module.database.DataBaseConnectionProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+    requires java.sql;
+    requires java.xml.ws.annotation;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+    requires be.yildizgames.feature.entity.shared;
+    requires be.yildizgames.module.database;
+    requires be.yildizgames.common.model;
+    requires be.yildizgames.common.geometry;
 
-/**
- * @author Grégory Van den Borre
- */
-public class PersistentEntityCreator implements EntityCreator {
+    requires org.jooq;
+    requires slf4j.api;
 
-    private final Logger logger = LoggerFactory.getLogger(PersistentEntityCreator.class);
-
-    private final PersistentEntity persistentEntity;
-
-    private final DataBaseConnectionProvider provider;
-
-    public PersistentEntityCreator(PersistentEntity persistentEntity, DataBaseConnectionProvider provider) {
-        this.persistentEntity = persistentEntity;
-        this.provider = provider;
-    }
-
-    @Override
-    public EntityId create(EntityToCreate e) {
-        try(Connection c = provider.getConnection()) {
-            return this.persistentEntity.save(e, c);
-        } catch (SQLException ex) {
-            this.logger.error("Sql error:", ex);
-            return EntityId.valueOf(-1);
-        }
-    }
+    exports be.yildizgames.engine.feature.entity.server;
+    exports be.yildizgames.engine.feature.entity.persistence;
 }

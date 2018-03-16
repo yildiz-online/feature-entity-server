@@ -22,20 +22,18 @@
  *
  */
 
-package be.yildizgames.engine.feature.entity;
+package be.yildizgames.engine.feature.entity.server;
+
+import be.yildizgames.engine.feature.entity.BaseEntity;
+import be.yildizgames.engine.feature.entity.EntityManager;
 
 /**
  * @author Grégory Van den Borre
  */
 public class ServerEntityManager extends EntityManager<BaseEntity> {
 
-    private static final ServerEntityManager INSTANCE = new ServerEntityManager();
-
-    private ServerEntityManager() {
-        super(null);
+    private ServerEntityManager(BaseEntity world) {
+        super(world);
     }
 
-    public static ServerEntityManager getInstance() {
-        return INSTANCE;
-    }
 }

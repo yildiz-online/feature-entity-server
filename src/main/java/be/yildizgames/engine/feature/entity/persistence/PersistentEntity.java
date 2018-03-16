@@ -24,10 +24,6 @@
 
 package be.yildizgames.engine.feature.entity.persistence;
 
-import be.yildiz.module.database.data.PersistentData;
-import be.yildizgames.common.collection.Lists;
-import be.yildizgames.common.collection.Maps;
-import be.yildizgames.common.collection.Sets;
 import be.yildizgames.common.geometry.Point3D;
 import be.yildizgames.common.model.EntityId;
 import be.yildizgames.common.model.PlayerId;
@@ -41,12 +37,16 @@ import be.yildizgames.engine.feature.entity.EntityToCreate;
 import be.yildizgames.engine.feature.entity.data.EntityType;
 import be.yildizgames.engine.feature.entity.generated.database.tables.Entities;
 import be.yildizgames.engine.feature.entity.generated.database.tables.records.EntitiesRecord;
+import be.yildizgames.module.database.data.PersistentData;
 import org.jooq.DSLContext;
 import org.jooq.RecordMapper;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -67,9 +67,11 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, En
     /**
      * List of Id not used.
      */
-    private final Set<EntityId> freeId = Sets.newInsertionOrderedSet();
+    private final Set<EntityId> freeId = new LinkedHashSet<>();
+
     private final EntityInConstructionFactory constructionFactory = new EntityInConstructionFactorySimple();
-    private final List<EntityInConstruction> entityToBuild = Lists.newList();
+
+    private final List<EntityInConstruction> entityToBuild = new ArrayList<>();
 
     /**
      * Full constructor, retrieve data from persistent context, create them in the factory and register them in the entity manager.
@@ -78,7 +80,7 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, En
      */
     public PersistentEntity(Connection c) {
         super();
-        Map<EntityId, String> names = Maps.newMap();
+        Map<EntityId, String> names = new HashMap<>();
         try (DSLContext create = this.getDSL(c)) {
 
             Optional.ofNullable(create.selectFrom(table).fetch())
