@@ -24,12 +24,12 @@
 
 package be.yildizgames.engine.feature.entity.persistence;
 
+import be.yildizgames.common.logging.LogFactory;
 import be.yildizgames.common.model.EntityId;
 import be.yildizgames.engine.feature.entity.EntityCreator;
 import be.yildizgames.engine.feature.entity.EntityToCreate;
 import be.yildizgames.module.database.DataBaseConnectionProvider;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,7 +39,7 @@ import java.sql.SQLException;
  */
 public class PersistentEntityCreator implements EntityCreator {
 
-    private final Logger logger = LoggerFactory.getLogger(PersistentEntityCreator.class);
+    private final Logger logger = LogFactory.getInstance().getLogger(PersistentEntityCreator.class);
 
     private final PersistentEntity persistentEntity;
 

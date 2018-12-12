@@ -30,6 +30,7 @@ module be.yildizgames.feature.entity.server {
     requires be.yildizgames.module.database;
     requires be.yildizgames.common.model;
     requires be.yildizgames.common.geometry;
+    requires be.yildizgames.common.logging;
 
     requires org.jooq;
     requires slf4j.api;
