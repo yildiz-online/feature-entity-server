@@ -25,6 +25,7 @@
 module be.yildizgames.feature.entity.server {
 
     requires java.sql;
+    requires java.annotation;
 
     requires be.yildizgames.feature.entity.shared;
     requires be.yildizgames.module.database;
