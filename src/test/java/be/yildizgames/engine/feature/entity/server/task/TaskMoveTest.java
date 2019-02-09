@@ -36,26 +36,26 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Grégory Van den Borre
  */
-class TaskMoveTest {
+public class TaskMoveTest {
 
 
     @Test
-    void testTaskMove1() {
+    public void testTaskMove1() {
         assertThrows(AssertionError.class, () -> new TaskMove(null, Point3D.ZERO, 0));
     }
 
     @Test
-    void testTaskMove2() {
+    public void testTaskMove2() {
         assertThrows(AssertionError.class, () -> new TaskMove(EntityId.valueOf(5L), null, 0));
     }
 
     @Test
-    void testTaskMove() {
+    public void testTaskMove() {
         new TaskMove(EntityId.valueOf(5L), Point3D.ZERO, 0);
     }
 
     @Test
-    void testGet() {
+    public void testGet() {
         TaskMove tm = new TaskMove(EntityId.valueOf(2L), Point3D.valueOf(1), 12);
         assertEquals(EntityId.valueOf(2L), tm.getEntity());
         assertEquals(Point3D.valueOf(1), tm.getDestination());

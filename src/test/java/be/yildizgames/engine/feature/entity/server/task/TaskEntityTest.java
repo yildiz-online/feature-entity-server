@@ -39,40 +39,40 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Grégory Van den Borre
  */
-final class TaskEntityTest {
+public final class TaskEntityTest {
 
     @Test
-    void testTaskEntity() {
+    public void testTaskEntity() {
         assertThrows(AssertionError.class, () -> new TaskEntity(null, PlayerId.valueOf(4), Point3D.ZERO, 1, 0));
     }
 
     @Test
-    void testTaskEntity2() {
+    public void testTaskEntity2() {
         assertThrows(AssertionError.class, () -> new TaskEntity(EntityId.valueOf(1L), null, Point3D.ZERO, 1, 0));
     }
 
     @Test
-    void testTaskEntity3() {
+    public void testTaskEntity3() {
         assertThrows(AssertionError.class, () -> new TaskEntity(EntityId.valueOf(1L), PlayerId.valueOf(2), null, 1, 0));
     }
 
     @Test
-    void testTaskEntity4() {
+    public void testTaskEntity4() {
         assertThrows(InvalidParameterException.class, () -> new TaskEntity(EntityId.valueOf(1L), PlayerId.valueOf(2), Point3D.ZERO, -1, 0));
     }
 
     @Test
-    void testTaskEntity5() {
+    public void testTaskEntity5() {
         assertThrows(InvalidParameterException.class, () -> new TaskEntity(EntityId.valueOf(1L), PlayerId.valueOf(2), Point3D.ZERO, 5, -1));
     }
 
     @Test
-    void testTaskEntity6() {
+    public void testTaskEntity6() {
         new TaskEntity(EntityId.valueOf(1L), PlayerId.valueOf(2), Point3D.ZERO, 5, 0);
     }
 
     @Test
-    void testGetEntity() {
+    public void testGetEntity() {
         TaskEntity te = new TaskEntity(EntityId.valueOf(1L), PlayerId.valueOf(2), Point3D.valueOf(5), 5, 0);
         assertEquals(EntityId.valueOf(1L), te.getEntity());
         assertEquals(PlayerId.valueOf(2), te.getOwner());

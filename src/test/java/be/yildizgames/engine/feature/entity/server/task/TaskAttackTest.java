@@ -35,20 +35,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Grégory Van den Borre
  */
-final class TaskAttackTest {
+public final class TaskAttackTest {
 
     @Test
-    void testTaskAttack() {
+    public void testTaskAttack() {
         assertThrows(AssertionError.class, () -> new TaskAttack(null, EntityId.valueOf(1L)));
     }
 
     @Test
-    void testTaskAttack2() {
+    public void testTaskAttack2() {
         assertThrows(AssertionError.class, () -> new TaskAttack(EntityId.valueOf(1L), null));
     }
 
     @Test
-    void testGet() {
+    public void testGet() {
         TaskAttack ta = new TaskAttack(EntityId.valueOf(1L), EntityId.valueOf(2L));
         assertEquals(EntityId.valueOf(1L), ta.getAttacker());
         assertEquals(EntityId.valueOf(2L), ta.getTarget());
