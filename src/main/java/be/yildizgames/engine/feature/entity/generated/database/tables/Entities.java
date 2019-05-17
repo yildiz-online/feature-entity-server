@@ -238,7 +238,8 @@ public class Entities extends TableImpl<EntitiesRecord> {
      * Rename this table
      */
     @Override
-    public Entities rename(Name name) {
+    public  Entities rename(Name name) {
         return new Entities(name, null);
     }
+
 }
