@@ -48,5 +48,4 @@
       <column name="DIRECTION_Z" type="FLOAT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
-
 </databaseChangeLog>
