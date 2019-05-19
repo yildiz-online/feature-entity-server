@@ -69,7 +69,7 @@ public final class TaskMove {
         return destination;
     }
 
-    public float getSpeed() {
+    public final float getSpeed() {
         return speed;
     }
 }

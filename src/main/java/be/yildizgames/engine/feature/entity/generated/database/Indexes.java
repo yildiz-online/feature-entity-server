@@ -35,7 +35,6 @@ import org.jooq.impl.AbstractKeys;
 
 import javax.annotation.Generated;
 
-
 /**
  * A class modelling indexes of tables of the <code>PUBLIC</code> schema.
  */

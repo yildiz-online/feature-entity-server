@@ -51,7 +51,7 @@ public class PersistentEntityCreator implements EntityCreator {
     }
 
     @Override
-    public EntityId create(EntityToCreate e) {
+    public final EntityId create(EntityToCreate e) {
         try(Connection c = provider.getConnection()) {
             return this.persistentEntity.save(e, c);
         } catch (SQLException ex) {

@@ -36,5 +36,4 @@ public class ServerActionManager extends ActionManager<BaseEntity> {
     private ServerActionManager(ServerEntityManager entityManager) {
         super(entityManager);
     }
-
 }

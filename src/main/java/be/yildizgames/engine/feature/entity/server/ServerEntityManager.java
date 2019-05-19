@@ -35,5 +35,4 @@ public class ServerEntityManager extends EntityManager<BaseEntity> {
     private ServerEntityManager(BaseEntity world) {
         super(world);
     }
-
 }

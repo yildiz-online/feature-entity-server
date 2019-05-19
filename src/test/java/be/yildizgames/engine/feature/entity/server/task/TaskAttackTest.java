@@ -53,4 +53,5 @@ public final class TaskAttackTest {
         assertEquals(EntityId.valueOf(1L), ta.getAttacker());
         assertEquals(EntityId.valueOf(2L), ta.getTarget());
     }
+
 }

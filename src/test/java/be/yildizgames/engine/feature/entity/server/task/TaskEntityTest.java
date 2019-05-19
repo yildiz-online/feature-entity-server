@@ -80,5 +80,4 @@ public final class TaskEntityTest {
         assertEquals(5, te.getType());
         assertEquals(0, te.getTimeLeft());
     }
-
 }

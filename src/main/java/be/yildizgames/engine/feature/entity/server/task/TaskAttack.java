@@ -59,6 +59,6 @@ public final class TaskAttack {
     }
 
     public EntityId getTarget() {
-        return target;
+        return this.target;
     }
 }

@@ -207,7 +207,7 @@ public final class PersistentEntity implements PersistentData<EntityToCreate, En
     }
 
     @Override
-    public BaseEntity map(EntitiesRecord entitiesRecord) {
+    public final BaseEntity map(EntitiesRecord entitiesRecord) {
         return null;
     }
 }

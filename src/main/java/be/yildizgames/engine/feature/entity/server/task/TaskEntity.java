@@ -96,6 +96,6 @@ public final class TaskEntity {
     }
 
     public long getTimeLeft() {
-        return timeLeft;
+        return this.timeLeft;
     }
 }

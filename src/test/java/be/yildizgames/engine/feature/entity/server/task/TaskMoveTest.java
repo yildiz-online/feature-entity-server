@@ -61,4 +61,5 @@ public class TaskMoveTest {
         assertEquals(Point3D.valueOf(1), tm.getDestination());
         assertEquals(12, tm.getSpeed(), 0.001);
     }
+
 }
