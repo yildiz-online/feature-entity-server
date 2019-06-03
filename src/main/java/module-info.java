@@ -34,7 +34,6 @@ module be.yildizgames.feature.entity.server {
     requires be.yildizgames.common.logging;
 
     requires org.jooq;
-    requires slf4j.api;
 
     exports be.yildizgames.engine.feature.entity.server;
     exports be.yildizgames.engine.feature.entity.persistence;

@@ -28,8 +28,6 @@ import be.yildizgames.common.model.EntityId;
 import be.yildizgames.engine.feature.entity.EntityCreator;
 import be.yildizgames.engine.feature.entity.EntityToCreate;
 import be.yildizgames.module.database.DataBaseConnectionProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,7 +37,7 @@ import java.sql.SQLException;
  */
 public class PersistentEntityCreator implements EntityCreator {
 
-    private final Logger logger = LoggerFactory.getLogger(PersistentEntityCreator.class);
+    private final System.Logger logger = System.getLogger(PersistentEntityCreator.class.getName());
 
     private final PersistentEntity persistentEntity;
 
@@ -55,7 +53,7 @@ public class PersistentEntityCreator implements EntityCreator {
         try(Connection c = provider.getConnection()) {
             return this.persistentEntity.save(e, c);
         } catch (SQLException ex) {
-            this.logger.error("Sql error:", ex);
+            this.logger.log(System.Logger.Level.ERROR,"Sql error:", ex);
             return EntityId.valueOf(-1);
         }
     }
