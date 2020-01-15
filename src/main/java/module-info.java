@@ -34,6 +34,6 @@ module be.yildizgames.feature.entity.server {
 
     requires org.jooq;
 
-    exports be.yildizgames.engine.feature.entity.server;
+    exports be.yildizgames.engine.feature.entity.server.task;
     exports be.yildizgames.engine.feature.entity.persistence;
 }
